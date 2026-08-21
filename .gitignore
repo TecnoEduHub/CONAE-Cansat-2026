@@ -1,0 +1,23 @@
+# --- Autosave / temporales ---
+*.FCBak
+*.kicad_pro-bak
+*.kicad_sch-bak
+*.kicad_pcb-bak
+*.kicad_wks-bak
+*-autosave.kicad_sch
+*-autosave.kicad_pcb
+*.autosave
+*.tmp
+*.bak
+*.bck
+
+# --- Lock files ---
+*.lck
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+
+# --- VSCode / editores ---
+.vscode/
+.idea/
