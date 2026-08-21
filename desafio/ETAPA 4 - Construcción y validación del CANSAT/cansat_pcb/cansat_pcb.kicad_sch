@@ -1,0 +1,21 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "fbd99480-11c7-4a9b-9a8e-5c21e70afcdc")
+	(paper "A4")
+	(title_block
+		(title "A.N.T.I.R. PCB - CANSAT 2026")
+		(date "2026-04-29")
+		(rev "1")
+		(company "E.E.S.T. N.°5 \"AMANCIO WILLIAMS\"")
+		(comment 1 "Equipo A.N.T.I.R.")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
