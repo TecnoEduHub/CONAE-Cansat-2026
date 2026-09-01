@@ -1,11 +1,15 @@
-
-/********* 
-  Receptor RX Oficial para Heltec WiFi LoRa 32 V3 
-  Usa RadioLib para el chip SX1262 
-*********/
+/*  ESTACIÓN TERRENA - E.E.S.T. N.°5 "Amancio Williams"
+    CONAE Cansat Secundario Edición 2026    
+    
+    Receptor RX Oficial para Heltec WiFi LoRa 32 V3 
+    Usa RadioLib para el chip SX1262 
+*/
 
 #include <RadioLib.h>
 #include <SPI.h>
+#include <Wire.h>
+#include "HT_SSD1306Wire.h"
+#include "logo_eest5.h"
 
 char Version[] = "v3.0 RX - Heltec V3";
 
@@ -29,6 +33,9 @@ SX1262 radio = new Module(HELTEC_NSS, HELTEC_DIO1, HELTEC_RST, HELTEC_BUSY);
 #define LORA_CODING_RATE 5
 #define LORA_SYNC_WORD 0xF3
 
+// Instancia de la pantalla OLED
+static SSD1306Wire display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED);
+
 void setup() {
   // Activar alimentación externa (Vext)
   pinMode(VEXT_PIN, OUTPUT);
@@ -41,21 +48,26 @@ void setup() {
   Serial.begin(SERIAL_BAUDRATE);
   delay(1000);
 
-  Serial.println("\n--- Inicializando Receptor LoRa SX1262 (Heltec V3) ---");
+  // Initialising the display
+  display.init();
+  screenLogo();
+  delay(2000);
+  screenInit();
 
   // Inicialización de RadioLib
-
-  int
-    state =
-      radio.begin(LORA_FREQUENCY,
-                  LORA_BANDWIDTH,
-                  LORA_SPREAD_FACTOR,
-                  LORA_CODING_RATE, LORA_SYNC_WORD);
+  Serial.println("\n--- Inicializando Receptor LoRa SX1262 (Heltec V3) ---");
+  delay(1500);
+  int state = radio.begin(LORA_FREQUENCY,
+                          LORA_BANDWIDTH,
+                          LORA_SPREAD_FACTOR,
+                          LORA_CODING_RATE, LORA_SYNC_WORD);
 
   if (state == RADIOLIB_ERR_NONE) {
+    screenLoRaOK();
     Serial.println("¡LoRa RX Inicializado Correctamente!");
     digitalWrite(LED, LOW);
   } else {
+    screenLoRaError();
     Serial.print("Error al iniciar LoRa, código: ");
     Serial.println(state);
     while (true) {
@@ -67,6 +79,7 @@ void setup() {
 
 
 void loop() {
+
   String strData;
   int state = radio.receive(strData);
 
@@ -117,4 +130,52 @@ void loop() {
     Serial.println("=====================================================================");
     digitalWrite(LED, LOW);
   }
+}
+
+void screenLogo() {
+  display.clear();
+
+  display.drawXbm(
+    34,  // X
+    5,  // Y
+    48,  // ancho
+    48,  // alto
+    logo_eest5_48x48);
+
+  display.display();
+}
+
+void screenInit() {
+  display.clear();
+
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(10, 10, "E.E.S.T. N.°5");
+
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(20, 35, "Heltec LoRa V3");
+  display.drawString(20, 50, "Init Receptor LoRa...");
+
+  display.display();
+}
+
+void screenLoRaOK() {
+  display.clear();
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(0, 0, "LoRa RX:");
+
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 25, "¡Inicializado");
+  display.drawString(0, 40, "Correctamente!");
+  display.display();
+}
+
+void screenLoRaError() {
+  display.clear();
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(0, 0, "LoRa RX:");
+
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 25, "Error al iniciar");
+  //display.drawString(0, 40, "");
+  display.display();
 }
