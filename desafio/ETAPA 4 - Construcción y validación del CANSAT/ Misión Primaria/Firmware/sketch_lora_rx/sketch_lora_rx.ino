@@ -13,6 +13,19 @@
 
 char Version[] = "v3.0 RX - Heltec V3";
 
+// Configuraciones generales
+#define DEBUG_MODE 1
+#define TEST_MODE 0
+#define SERIAL_BAUDRATE 115200
+
+#if DEBUG_MODE
+#define DEBUG_PRINT(x) Serial.print(x)
+#define DEBUG_PRINTLN(x) Serial.println(x)
+#else
+#define DEBUG_PRINT(x)
+#define DEBUG_PRINTLN(x)
+#endif
+
 // Definición de pines para Heltec V3 (SX1262)
 #define HELTEC_NSS 8
 #define HELTEC_DIO1 14
@@ -23,8 +36,6 @@ char Version[] = "v3.0 RX - Heltec V3";
 
 // Instancia del módulo LoRa SX1262
 SX1262 radio = new Module(HELTEC_NSS, HELTEC_DIO1, HELTEC_RST, HELTEC_BUSY);
-
-#define SERIAL_BAUDRATE 115200
 
 // Configuraciones del módulo LoRa
 #define LORA_FREQUENCY 915.0  // MHz
@@ -55,7 +66,7 @@ void setup() {
   screenInit();
 
   // Inicialización de RadioLib
-  Serial.println("\n--- Inicializando Receptor LoRa SX1262 (Heltec V3) ---");
+  DEBUG_PRINTLN("\n--- Inicializando Receptor LoRa SX1262 (Heltec V3) ---");
   delay(1500);
   int state = radio.begin(LORA_FREQUENCY,
                           LORA_BANDWIDTH,
@@ -64,12 +75,12 @@ void setup() {
 
   if (state == RADIOLIB_ERR_NONE) {
     screenLoRaOK();
-    Serial.println("¡LoRa RX Inicializado Correctamente!");
+    DEBUG_PRINTLN("¡LoRa RX Inicializado Correctamente!");
     digitalWrite(LED, LOW);
   } else {
     screenLoRaError();
-    Serial.print("Error al iniciar LoRa, código: ");
-    Serial.println(state);
+    DEBUG_PRINT("Error al iniciar LoRa, código: ");
+    DEBUG_PRINTLN(state);
     while (true) {
       digitalWrite(LED, !digitalRead(LED));
       delay(200);
@@ -80,54 +91,67 @@ void setup() {
 
 void loop() {
 
+#if TEST_MODE
+  // Solo pruebas del Dashboard (SerialStudio)
+  // Packet Number (1), Presion Base (2), Presion Absoluta (3), Altura (4), Temperatura (5), 
+  // Aceleracion X (6), Aceleracion Y (7), Aceleracion  Z (8), Velocidad Angular X (9),
+  // Velocidad Angular Y (10), Velocidad Angular Z (11), RSSI (12), SNR (13)
+  Serial.println("1,1013.2,987.4,215.3,24.5,10,11,12,20,21,22,30,31");
+  delay(1000);
+#endif
+
+
+Ax, Ay, Az, Gx, Gy, Gz
+
+g °/s
+
+
   String strData;
   int state = radio.receive(strData);
 
   if (state == RADIOLIB_ERR_NONE) {
     digitalWrite(LED, HIGH);
 
-    Serial.print("RX - Version ");
-    Serial.println(Version);
+    DEBUG_PRINTLN("RX - Version ");
+    DEBUG_PRINTLN(Version);
 
-    Serial.print("Telemetria RAW Recibida: ");
+    DEBUG_PRINT("Telemetria RAW Recibida: ");
     Serial.println(strData);
 
     // Parseo de los datos separados por comas
     int indicador1 = strData.indexOf(',');
     String pktNumber = strData.substring(0, indicador1);
-    Serial.print("Packet Number: ");
-    Serial.println(pktNumber);
+    DEBUG_PRINT("Packet Number: ");
+    DEBUG_PRINTLN(pktNumber);
 
     int indicador2 = strData.indexOf(',', indicador1 + 1);
     String presionBase = strData.substring(indicador1 + 1, indicador2);
-    Serial.print("Presion Base: ");
-    Serial.println(presionBase);
+    DEBUG_PRINT("Presion Base: ");
+    DEBUG_PRINTLN(presionBase);
 
     int indicador3 = strData.indexOf(',', indicador2 + 1);
     String presionAbsoluta = strData.substring(indicador2 + 1, indicador3);
-    Serial.print("Presion Absoluta: ");
-    Serial.println(presionAbsoluta);
+    DEBUG_PRINT("Presion Absoluta: ");
+    DEBUG_PRINTLN(presionAbsoluta);
 
     int indicador4 = strData.indexOf(',', indicador3 + 1);
     String altura = strData.substring(indicador3 + 1, indicador4);
-    Serial.print("Altura: ");
-    Serial.println(altura);
+    DEBUG_PRINT("Altura: ");
+    DEBUG_PRINTLN(altura);
 
     int indicador5 = strData.indexOf(',', indicador4 + 1);
     String temperatura = strData.substring(indicador4 + 1, indicador5);
-    Serial.print("Temperatura: ");
-    Serial.println(temperatura);
+    DEBUG_PRINT("Temperatura: ");
+    DEBUG_PRINTLN(temperatura);
 
     // RSSI y SNR del paquete recibido
-    Serial.print("Nivel de señal [RSSI]: ");
-    Serial.print(radio.getRSSI());
-    Serial.println(" dBm");
+    DEBUG_PRINT("RSSI - Nivel de señal [dBm]: ");
+    DEBUG_PRINTLN(radio.getRSSI());
 
-    Serial.print("Relación Señal/Ruido [SNR]: ");
-    Serial.print(radio.getSNR());
-    Serial.println(" dB");
+    DEBUG_PRINT("SNR - Relación Señal/Ruido [dB]: ");
+    DEBUG_PRINTLN(radio.getSNR());
 
-    Serial.println("=====================================================================");
+    DEBUG_PRINT("=====================================================================");
     digitalWrite(LED, LOW);
   }
 }
@@ -137,7 +161,7 @@ void screenLogo() {
 
   display.drawXbm(
     34,  // X
-    5,  // Y
+    5,   // Y
     48,  // ancho
     48,  // alto
     logo_eest5_48x48);
