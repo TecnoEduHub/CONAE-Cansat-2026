@@ -1,0 +1,2 @@
+El software utilizado para mostrar los datos es Serial Studio en la versión 3.0.6.
+Se puede descargar desde https://github.com/Serial-Studio/Serial-Studio/releases?page=3#release-v3.0.6.
