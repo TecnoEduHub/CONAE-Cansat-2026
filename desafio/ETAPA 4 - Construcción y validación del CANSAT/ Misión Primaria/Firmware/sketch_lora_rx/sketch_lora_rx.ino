@@ -110,6 +110,14 @@ void loop() {
     DEBUG_PRINTLN(Version);
 
     DEBUG_PRINT("Telemetria RAW Recibida: ");
+    DEBUG_PRINTLN(strData);
+
+    // Trama de datos para el DASHBOARD
+    strData += ",";
+    strData += String(radio.getRSSI());
+    strData += ",";
+    strData += String(radio.getSNR());
+    DEBUG_PRINT("Telemetria Completa: ");
     Serial.println(strData);
 
     // Parseo de los datos separados por comas
