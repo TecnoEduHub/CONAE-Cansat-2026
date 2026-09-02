@@ -147,7 +147,7 @@
                     "max": 0,
                     "min": 0,
                     "title": "Aceleración X",
-                    "units": "g",
+                    "units": "m/s²",
                     "value": "--.--",
                     "widget": ""
                 },
@@ -164,7 +164,7 @@
                     "max": 0,
                     "min": 0,
                     "title": "Aceleración Y",
-                    "units": "g",
+                    "units": "m/s²",
                     "value": "--.--",
                     "widget": ""
                 },
@@ -181,7 +181,7 @@
                     "max": 0,
                     "min": 0,
                     "title": "Aceleración Z",
-                    "units": "g",
+                    "units": "m/s²",
                     "value": "--.--",
                     "widget": ""
                 },
@@ -198,7 +198,7 @@
                     "max": 0,
                     "min": 0,
                     "title": "Velocidad Angular X",
-                    "units": "°/s",
+                    "units": "rad/s",
                     "value": "--.--",
                     "widget": ""
                 },
@@ -215,8 +215,8 @@
                     "max": 0,
                     "min": 0,
                     "title": "Velocidad Angular Y",
-                    "units": "°/s",
-                    "value": "",
+                    "units": "rad/s",
+                    "value": "--.--",
                     "widget": ""
                 },
                 {
@@ -232,8 +232,8 @@
                     "max": 0,
                     "min": 0,
                     "title": "Velocidad Angular Z",
-                    "units": "°/s",
-                    "value": "",
+                    "units": "rad/s",
+                    "value": "--.--",
                     "widget": ""
                 }
             ],
