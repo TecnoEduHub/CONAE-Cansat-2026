@@ -93,18 +93,12 @@ void loop() {
 
 #if TEST_MODE
   // Solo pruebas del Dashboard (SerialStudio)
-  // Packet Number (1), Presion Base (2), Presion Absoluta (3), Altura (4), Temperatura (5), 
+  // Packet Number (1), Presion Base (2), Presion Absoluta (3), Altura (4), Temperatura (5),
   // Aceleracion X (6), Aceleracion Y (7), Aceleracion  Z (8), Velocidad Angular X (9),
   // Velocidad Angular Y (10), Velocidad Angular Z (11), RSSI (12), SNR (13)
   Serial.println("1,1013.2,987.4,215.3,24.5,10,11,12,20,21,22,30,31");
   delay(1000);
 #endif
-
-
-Ax, Ay, Az, Gx, Gy, Gz
-
-g °/s
-
 
   String strData;
   int state = radio.receive(strData);
@@ -144,6 +138,37 @@ g °/s
     DEBUG_PRINT("Temperatura: ");
     DEBUG_PRINTLN(temperatura);
 
+    // MPU6050 data
+    int indicador6 = strData.indexOf(',', indicador5 + 1);
+    String Ax = strData.substring(indicador5 + 1, indicador6);
+    DEBUG_PRINT("Aceleración X: ");
+    DEBUG_PRINTLN(Ax);
+
+    int indicador7 = strData.indexOf(',', indicador6 + 1);
+    String Ay = strData.substring(indicador6 + 1, indicador7);
+    DEBUG_PRINT("Aceleración Y: ");
+    DEBUG_PRINTLN(Ay);
+
+    int indicador8 = strData.indexOf(',', indicador7 + 1);
+    String Az = strData.substring(indicador7 + 1, indicador8);
+    DEBUG_PRINT("Aceleración Z: ");
+    DEBUG_PRINTLN(Az);
+
+    int indicador9 = strData.indexOf(',', indicador8 + 1);
+    String Gx = strData.substring(indicador8 + 1, indicador9);
+    DEBUG_PRINT("Velocidad Angular X: ");
+    DEBUG_PRINTLN(Gx);
+
+    int indicador10 = strData.indexOf(',', indicador9 + 1);
+    String Gy = strData.substring(indicador9 + 1, indicador10);
+    DEBUG_PRINT("Velocidad Angular Y: ");
+    DEBUG_PRINTLN(Gy);
+
+    int indicador11 = strData.indexOf(',', indicador10 + 1);
+    String Gz = strData.substring(indicador10 + 1, indicador11);
+    DEBUG_PRINT("Velocidad Angular Z: ");
+    DEBUG_PRINTLN(Gz);
+
     // RSSI y SNR del paquete recibido
     DEBUG_PRINT("RSSI - Nivel de señal [dBm]: ");
     DEBUG_PRINTLN(radio.getRSSI());
@@ -156,29 +181,20 @@ g °/s
   }
 }
 
+// Pantallas OLED
 void screenLogo() {
   display.clear();
-
-  display.drawXbm(
-    34,  // X
-    5,   // Y
-    48,  // ancho
-    48,  // alto
-    logo_eest5_48x48);
-
+  display.drawXbm(34, 5, 48, 48, logo_eest5_48x48);
   display.display();
 }
 
 void screenInit() {
   display.clear();
-
   display.setFont(ArialMT_Plain_16);
   display.drawString(10, 10, "E.E.S.T. N.°5");
-
   display.setFont(ArialMT_Plain_10);
   display.drawString(20, 35, "Heltec LoRa V3");
   display.drawString(20, 50, "Init Receptor LoRa...");
-
   display.display();
 }
 
@@ -186,7 +202,6 @@ void screenLoRaOK() {
   display.clear();
   display.setFont(ArialMT_Plain_16);
   display.drawString(0, 0, "LoRa RX:");
-
   display.setFont(ArialMT_Plain_10);
   display.drawString(0, 25, "¡Inicializado");
   display.drawString(0, 40, "Correctamente!");
@@ -197,7 +212,6 @@ void screenLoRaError() {
   display.clear();
   display.setFont(ArialMT_Plain_16);
   display.drawString(0, 0, "LoRa RX:");
-
   display.setFont(ArialMT_Plain_10);
   display.drawString(0, 25, "Error al iniciar");
   //display.drawString(0, 40, "");
