@@ -97,12 +97,13 @@ void setup() {
 void loop() {
   readTempPressure();
   mpuRead();
+  mpuPrint();
 
   pktNumber++;
   if (pktNumber >= 65500) pktNumber = 0;
 
   // Packet Number (1), Presion Base (2), Presion Absoluta (3), Altura (4)
-  // Temperatura (5), Aceleracion X (6), Aceleracion Y (7), 
+  // Temperatura (5), Aceleracion X (6), Aceleracion Y (7),
   // Aceleracion  Z (8), Velocidad Angular X (9), Velocidad Angular Y (10)
   // Velocidad Angular Z (11)
   String packetData = String(pktNumber) + "," + String(baseline * 0.01, 2) + "," + String(P * 0.01, 2) + "," + String(A, 2)
@@ -213,4 +214,28 @@ void mpuInit() {
 
 void mpuRead() {
   mpu.getEvent(&mpu_a, &mpu_g, &mpu_temp);
+}
+
+void mpuPrint() {
+  Serial.print("Acceleration X: ");
+  Serial.print(mpu_a.acceleration.x);
+  Serial.print(", Y: ");
+  Serial.print(mpu_a.acceleration.y);
+  Serial.print(", Z: ");
+  Serial.print(mpu_a.acceleration.z);
+  Serial.println(" m/s^2");
+
+  Serial.print("Rotation X: ");
+  Serial.print(mpu_g.gyro.x);
+  Serial.print(", Y: ");
+  Serial.print(mpu_g.gyro.y);
+  Serial.print(", Z: ");
+  Serial.print(mpu_g.gyro.z);
+  Serial.println(" rad/s");
+
+  Serial.print("Temperature: ");
+  Serial.print(mpu_temp.temperature);
+  Serial.println(" degC");
+
+  Serial.println("");
 }

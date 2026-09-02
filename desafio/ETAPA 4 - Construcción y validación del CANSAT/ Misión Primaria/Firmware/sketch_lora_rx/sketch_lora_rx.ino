@@ -14,7 +14,7 @@
 char Version[] = "v3.0 RX - Heltec V3";
 
 // Configuraciones generales
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 #define TEST_MODE 0
 #define SERIAL_BAUDRATE 115200
 
